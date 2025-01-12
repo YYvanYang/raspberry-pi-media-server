@@ -26,9 +26,9 @@
 
 1. 下载并安装：
 ```bash
-wget https://raw.githubusercontent.com/用户名/项目名/main/install.sh
-chmod +x install.sh
-sudo ./install.sh
+wget https://raw.githubusercontent.com/YYvanYang/raspberry-pi-media-server/main/media-server-installer.sh
+chmod +x media-server-installer.sh
+sudo ./media-server-installer.sh
 ```
 
 2. 配置下载工具：
