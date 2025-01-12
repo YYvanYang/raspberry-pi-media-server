@@ -1,159 +1,158 @@
-# 树莓派5媒体服务器安装脚本
+# 树莓派5媒体中心
 
-专为树莓派5设计的媒体服务器一键安装/更新脚本，充分利用树莓派5的高性能，提供完整的家庭媒体解决方案。
+专为树莓派5设计的媒体中心方案，集成下载和文件共享功能，完美配合 Apple TV + Infuse 实现家庭影音播放。
 
-## 主要功能
+## 功能概览
 
-- **Jellyfin**: 媒体服务器
-  - 支持树莓派5硬件加速转码
-  - 支持4K视频播放和转码
-  - 智能识别影视信息
-  - 跨平台客户端支持
-  
-- **Aria2 + AriaNg**: 下载工具
-  - 支持BT/磁力链接下载
+### 下载管理
+- **Aria2 + AriaNg**
+  - 支持多种下载协议（HTTP/BT/磁力链接）
   - 美观的Web管理界面
-  - 支持远程下载管理
-  
-- **Samba**: 网络文件共享
-  - 高性能文件共享
-  - 优化的性能配置
-  - 支持中文处理
+  - 支持远程操作和管理
 
-## 系统要求
+### 文件共享
+- **Samba**
+  - 高性能局域网文件共享
+  - 完美兼容 Apple TV + Infuse 组合
+  - 支持全平台访问（Windows/macOS/iOS）
 
-- Raspberry Pi 5
-  - 支持所有内存版本（4GB/8GB）
-  - 推荐8GB内存版本以获得最佳性能
-- Raspberry Pi OS (64位)
-  - 基于 Debian 12 (bookworm)
-  - 支持官方系统和定制系统
-- 存储要求：
-  - 系统盘：至少20GB
-  - 建议外接USB3.0硬盘存储媒体文件
-- 网络：
-  - 有线网络（推荐2.5G网口）
-  - 支持WiFi 6
+### 影音播放
+- **Apple TV + Infuse**
+  - 支持几乎所有主流视频格式
+  - 自动下载影片元数据
+  - 优秀的播放体验和界面
 
 ## 快速开始
 
-1. 下载安装脚本：
+1. 下载并安装：
 ```bash
-wget https://raw.githubusercontent.com/用户名/raspberry-pi5-media-server/main/install.sh
-```
-
-2. 添加执行权限：
-```bash
+wget https://raw.githubusercontent.com/用户名/项目名/main/install.sh
 chmod +x install.sh
-```
-
-3. 执行安装：
-```bash
 sudo ./install.sh
 ```
 
-## 服务访问
+2. 配置下载工具：
+```bash
+# 访问 AriaNg Web界面
+http://树莓派IP/ariang/
+```
 
-### Jellyfin
-- 访问地址：`http://树莓派IP:8096`
-- 首次配置：
-  - 创建管理员账户
-  - 配置媒体库
-  - 开启硬件加速
-- 支持客户端：
-  - Web浏览器
-  - iOS/Android应用
-  - Apple TV/Android TV
-  - Smart TV应用
-
-### Aria2 + AriaNg
-- 访问地址：`http://树莓派IP/ariang/`
-- 首次配置：
-  1. 打开AriaNg
-  2. 点击设置图标
-  3. 配置RPC连接：
-     - 地址：`http://树莓派IP:6800/jsonrpc`
-     - 密钥：见 `~/media_server_info.txt`
-
-### Samba共享
-- Windows：`\\树莓派IP\Media`
-- macOS：`smb://树莓派IP/Media`
-- Linux：`smb://树莓派IP/Media`
-- 访问凭据：
-  - 用户名：系统用户名
-  - 密码：见安装日志
-
-## 目录结构
-
+3. 设置媒体目录：
 ```
 ~/media/
-├── movies/     # 电影目录
-├── tv/         # 剧集目录
-├── music/      # 音乐目录
+├── movies/     # 电影
+├── tv/         # 剧集
+├── music/      # 音乐
 └── downloads/  # 下载目录
 ```
 
-## 性能优化建议
+## 媒体播放设置
 
-1. 存储配置
-   - 系统安装在高速SD卡或SSD
-   - 媒体文件存储在USB3.0硬盘
-   - 使用ext4文件系统
+### Apple TV + Infuse 设置教程
 
-2. 散热方案
-   - 使用官方主动散热器
-   - 保持通风良好
-   - 监控CPU温度
+1. **准备工作**
+   - Apple TV 已连接到局域网
+   - 在 App Store 下载安装 Infuse
+   - 确保树莓派 Samba 服务正常运行
 
-3. 网络优化
-   - 使用有线网络
-   - 启用巨型帧（Jumbo frames）
-   - 优化网络缓冲区设置
+2. **Infuse 配置步骤**
+   - 打开 Infuse
+   - 点击"添加共享"（Add Share）
+   - 选择"SMB"作为共享类型
+   - 输入以下信息：
+     - 地址：树莓派IP（如：192.168.1.100）
+     - 共享名：Media
+     - 用户名：pi（或你的用户名）
+     - 密码：你的 Samba 密码
+   - 选择要导入的媒体文件夹
 
-## 常见问题解决
+3. **文件命名建议**
+   - 电影：`电影名 (年份).扩展名`
+     - 示例：`海上钢琴师 (1998).mkv`
+   - 剧集：`剧集名/季/SxxExx.扩展名`
+     - 示例：`黑镜/Season 1/S01E01.mkv`
 
-### 1. AriaNg连接失败
-- 检查RPC密钥是否正确配置
-- 确认Aria2服务状态：`systemctl status aria2`
-- 查看RPC密钥：`~/media_server_info.txt`
+4. **最佳实践**
+   - 使用有线网络连接
+   - 定期整理媒体文件结构
+   - 保持一致的命名规范
 
-### 2. Jellyfin播放卡顿
-- 检查硬件解码是否启用
-- 确认网络带宽充足
-- 查看CPU温度和性能
+## 服务配置
 
-### 3. Samba访问问题
-- 检查服务状态：`systemctl status smbd`
-- 重置访问密码：`sudo smbpasswd -a 用户名`
-- 确认网络连接正常
+### Aria2 + AriaNg
+- 地址：`http://树莓派IP/ariang/`
+- 首次配置：
+  1. 点击设置图标
+  2. 配置 RPC：
+     - 地址：`http://树莓派IP:6800/jsonrpc`
+     - 密钥：见 `~/media_server_info.txt`
+
+### Samba 文件共享
+- Windows：`\\树莓派IP\Media`
+- macOS：`smb://树莓派IP/Media`
+- 凭据：见安装日志
+
+## 性能优化
+
+### 存储配置
+- 系统：高速 SD 卡或 SSD
+- 媒体：USB 3.0 硬盘
+- 文件系统：ext4
+
+### 网络优化
+- 使用有线网络
+- 开启巨型帧（MTU 9000）
+- 优化 Samba 配置
+
+## 常见问题
+
+### 1. Infuse 无法连接
+- 检查 Samba 服务状态
+- 验证网络连接
+- 确认用户名密码正确
+
+### 2. AriaNg 连接失败
+- 检查 RPC 密钥配置
+- 确认 Aria2 服务状态
+- 查看错误日志
+
+### 3. 播放卡顿
+- 检查网络带宽
+- 确认视频编码格式
+- 查看存储设备性能
 
 ## 维护指南
 
 ### 日常维护
 ```bash
-# 系统更新
+# 更新系统
 sudo apt update && sudo apt upgrade -y
 
-# 空间检查
-df -h
-du -sh ~/media/*
+# 检查服务
+systemctl status aria2 smbd
 
-# 服务状态
-systemctl status jellyfin aria2 smbd
+# 查看空间
+df -h
 ```
 
-### 配置文件
+### 配置文件位置
 - Aria2：`~/.aria2/aria2.conf`
-- Jellyfin：`/etc/jellyfin/`
 - Samba：`/etc/samba/smb.conf`
 - 服务信息：`~/media_server_info.txt`
 
 ## 问题反馈
 
-遇到问题请提供：
-1. 树莓派5具体型号和系统版本
+反馈时请提供：
+1. 树莓派5型号和系统版本
 2. 详细错误信息
-3. 安装日志：`/tmp/media_server_install.log`
+3. 相关日志
+
+## 更新记录
+
+- 2025.01.14
+  - 优化媒体中心架构
+  - 完善 Apple TV + Infuse 设置指南
+  - 改进性能优化建议
 
 ## 许可证
 

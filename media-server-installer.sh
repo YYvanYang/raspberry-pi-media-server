@@ -41,24 +41,6 @@ install_base_dependencies() {
     apt install -y curl wget unzip git htop iftop nginx
 }
 
-# 安装/更新Jellyfin
-setup_jellyfin() {
-    log "配置Jellyfin..."
-    
-    # 检查是否已安装
-    if dpkg -l | grep -q jellyfin; then
-        log "Jellyfin已安装，检查更新..."
-        apt update && apt upgrade jellyfin -y
-    else
-        log "安装Jellyfin..."
-        curl https://repo.jellyfin.org/install-debuntu.sh | bash
-        apt install -y jellyfin
-    fi
-    
-    systemctl enable jellyfin
-    systemctl restart jellyfin
-}
-
 # 安装/更新Aria2
 setup_aria2() {
     log "配置Aria2..."
@@ -238,10 +220,6 @@ save_service_info() {
     cat > $USER_HOME/media_server_info.txt << EOF
 === 媒体服务器访问信息 ===
 
-Jellyfin:
-- 网址: http://$(hostname -I | cut -d' ' -f1):8096
-- 首次访问时需要创建管理员账户
-
 Aria2:
 - RPC地址: http://$(hostname -I | cut -d' ' -f1):6800/jsonrpc
 - RPC密钥: ${RPC_SECRET}
@@ -267,7 +245,6 @@ main() {
     
     install_base_dependencies
     setup_directories
-    setup_jellyfin
     setup_aria2
     setup_ariang
     setup_samba
