@@ -93,6 +93,7 @@ sudo ./media-server-installer.sh
      - SSL/TLS: 关闭
      - 密钥: 在 ~/media_server_info.txt 文件中查看 RPC密钥
   5. 如果不设置正确的RPC密钥，会显示"认证失败"的错误
+  ![AriaNg](./images/AriaNg.png)
 
 ### 3. qBittorrent
 - 网址：`http://树莓派IP:8080`
