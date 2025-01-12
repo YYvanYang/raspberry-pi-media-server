@@ -147,34 +147,6 @@ EOF
     systemctl restart aria2
 }
 
-# 安装/更新qBittorrent
-setup_qbittorrent() {
-    log "配置qBittorrent..."
-    
-    # 安装或更新qbittorrent-nox
-    apt install -y qbittorrent-nox
-    
-    # 创建服务
-    cat > /etc/systemd/system/qbittorrent.service << EOF
-[Unit]
-Description=qBittorrent-nox service
-After=network.target
-
-[Service]
-Type=forking
-User=$ACTUAL_USER
-ExecStart=/usr/bin/qbittorrent-nox -d
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-EOF
-    
-    systemctl daemon-reload
-    systemctl enable qbittorrent
-    systemctl restart qbittorrent
-}
-
 # 安装/更新AriaNg
 setup_ariang() {
     log "配置AriaNg..."
@@ -275,11 +247,6 @@ Aria2:
 - RPC密钥: ${RPC_SECRET}
 - Web界面: http://$(hostname -I | cut -d' ' -f1)/ariang/
 
-qBittorrent:
-- 网址: http://$(hostname -I | cut -d' ' -f1):8080
-- 默认用户名: admin
-- 默认密码: adminadmin
-
 Samba共享:
 - 共享路径: \\\\$(hostname -I | cut -d' ' -f1)\\Media
 - 用户名: $ACTUAL_USER
@@ -302,7 +269,6 @@ main() {
     setup_directories
     setup_jellyfin
     setup_aria2
-    setup_qbittorrent
     setup_ariang
     setup_samba
     save_service_info
